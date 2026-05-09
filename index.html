@@ -164,7 +164,17 @@
         
         body.loaded .scroll-indicator {
             animation: float 2s ease-in-out infinite, fadeIndicator 2s ease-in forwards;
-            animation-delay: 0s, 2.5s; /* Delay the appearance of scroll text */
+            animation-delay: 0s, 2.5s;
+        }
+
+        /* KILL TRANSITIONS AFTER INTRO SO PARALLAX IS INSTANT */
+        body.animations-done .layer-bg,
+        body.animations-done .layer-sun,
+        body.animations-done .layer-sky,
+        body.animations-done .hero-text > *,
+        body.animations-done .layer-statue,
+        body.animations-done .layer-texture {
+            transition: none !important;
         }
 
         @keyframes fadeIndicator { to { opacity: 1; } }
@@ -174,7 +184,7 @@
         }
 
         /* =========================================
-           CONTENT & FORM SECTION (STYLES REMAIN THE SAME)
+           CONTENT & FORM SECTION
            ========================================= */
         .content-section { position: relative; z-index: 10; background-color: var(--bg-dark); padding: 50px 20px; max-width: 600px; margin: 0 auto; }
         .info-block { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 10px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -306,28 +316,37 @@
     <script>
         // INIT ANIMATION WHEN EVERYTHING IS LOADED
         window.addEventListener('load', () => {
-            // Add 'loaded' class to trigger all CSS intro animations
+            // Запускаємо стартові анімації
             document.body.classList.add('loaded');
 
-            // Auto-scroll nudge after intro animations complete (approx 3.5 seconds)
+            // Через 3.5 секунди (коли всі анімації завершились) вимикаємо затримки (transitions)
+            // і робимо авто-скрол
             setTimeout(() => {
+                document.body.classList.add('animations-done');
+                
                 if (window.scrollY === 0) {
                     window.scrollBy({ top: 90, behavior: 'smooth' });
                 }
             }, 3500);
         });
 
-        // Parallax effect on scroll
+        // Parallax effect on scroll (Optimized with requestAnimationFrame)
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            let scrollY = window.scrollY;
-            // Only apply parallax if screen is wider than 0 to prevent mobile glitches on initial load
-            if(scrollY >= 0) {
-                document.getElementById('l-bg').style.transform = `scale(1) translateY(${scrollY * 0.5}px)`;
-                document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
-                document.getElementById('l-sky').style.transform = `translateY(${scrollY * 0.3}px)`;
-                document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.15}px)`;
-                document.getElementById('l-texture').style.transform = `translateY(${scrollY * 0.15}px)`; 
-                document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.02}px)`; 
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    let scrollY = window.scrollY;
+                    if(scrollY >= 0) {
+                        document.getElementById('l-bg').style.transform = `scale(1) translateY(${scrollY * 0.5}px)`;
+                        document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
+                        document.getElementById('l-sky').style.transform = `translateY(${scrollY * 0.3}px)`;
+                        document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.15}px)`;
+                        document.getElementById('l-texture').style.transform = `translateY(${scrollY * 0.15}px)`; 
+                        document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.02}px)`; 
+                    }
+                    ticking = false;
+                });
+                ticking = true;
             }
         });
 
