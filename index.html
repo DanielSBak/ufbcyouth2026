@@ -39,19 +39,34 @@
             position: relative;
         }
 
-        /* GLOBAL TEXTURE OVERLAY */
+        /* =========================================
+           GLOBAL TEXTURE OVERLAY (WITH 90 DEGREE MOBILE ROTATION)
+           ========================================= */
         .global-texture {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('Xerox Texture Image.png'), url('Texture Grain Image.png');
-            background-size: cover;
-            mix-blend-mode: overlay;
-            opacity: 0.6;
             pointer-events: none; /* Let clicks pass through to buttons/forms */
             z-index: 9999;
+            overflow: hidden;
+        }
+
+        .global-texture::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Swap width and height for mobile to fit perfectly when rotated */
+            width: 100vh; 
+            height: 100vw;
+            transform: translate(-50%, -50%) rotate(90deg);
+            background-image: url('texture-image.png'), url('xerox-texture.png'), url('texture-grain.png');
+            background-size: cover;
+            background-position: center;
+            mix-blend-mode: overlay;
+            opacity: 0.65;
         }
 
         /* =========================================
@@ -76,9 +91,9 @@
             background-repeat: no-repeat;
         }
 
-        /* Layer mapping based on your GitHub files */
-        .layer-bg { background-image: url('Red Rocks Image.png'); z-index: 1; }
-        .layer-sun { background-image: url('Gold Circle Image.png'); z-index: 2; background-size: contain; }
+        /* Exact layer mapping based on your GitHub files */
+        .layer-bg { background-image: url('red-rocks.png'); z-index: 1; }
+        .layer-sun { background-image: url('gold-circle.png'); z-index: 2; background-size: contain; }
         
         .hero-text {
             position: relative;
@@ -105,8 +120,8 @@
             color: #e5e5e1;
         }
 
-        .layer-statue { background-image: url('Statue Image.png'); z-index: 4; background-position: bottom center; background-size: contain; }
-        .layer-foreground { background-image: url('Ripped Sky Image.png'); z-index: 5; background-position: bottom center; }
+        .layer-statue { background-image: url('statue.png'); z-index: 4; background-position: bottom center; background-size: contain; }
+        .layer-foreground { background-image: url('ripped-sky.png'); z-index: 5; background-position: bottom center; }
 
         /* =========================================
            CONTENT & FORM SECTION
@@ -258,6 +273,11 @@
 
         /* Desktop Adjustments */
         @media (min-width: 768px) {
+            .global-texture::before {
+                width: 100vw; /* Return to normal width */
+                height: 100vh; /* Return to normal height */
+                transform: translate(-50%, -50%) rotate(0deg); /* Remove rotation */
+            }
             .hero-text h1 { font-size: 18vw; }
             .hero-text h2 { font-size: 3vw; }
             .content-section { padding: 80px 40px; }
@@ -308,6 +328,7 @@
         <div class="info-block" id="form-container">
             <h3>Registration Form</h3>
             
+            <!-- Replace YOUR_FORMSPREE_ID with your actual ID -->
             <form id="registrationForm" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
                 
                 <div>
