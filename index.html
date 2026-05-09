@@ -40,7 +40,7 @@
         }
 
         /* =========================================
-           GLOBAL TEXTURE OVERLAY (50% Opacity + Reordered)
+           GLOBAL TEXTURE OVERLAY (30% Opacity + New Order)
            ========================================= */
         .global-texture {
             position: fixed;
@@ -61,16 +61,16 @@
             width: 100vh; 
             height: 100vw;
             transform: translate(-50%, -50%) rotate(90deg);
-            /* Reordered textures for a better blend */
-            background-image: url('texture-grain.png'), url('xerox-texture.png'), url('texture-image.png');
+            /* New texture order */
+            background-image: url('xerox-texture.png'), url('texture-image.png'), url('texture-grain.png');
             background-size: cover;
             background-position: center;
             mix-blend-mode: overlay;
-            opacity: 0.5; /* Reduced opacity */
+            opacity: 0.3; /* Lowered opacity */
         }
 
         /* =========================================
-           3D PARALLAX HERO SECTION (CORRECTED LAYERS)
+           3D PARALLAX HERO SECTION
            ========================================= */
         .hero-container {
             position: relative;
@@ -100,7 +100,7 @@
         /* 3. RIPPED SKY */
         .layer-sky { background-image: url('ripped-sky.png'); z-index: 3; background-position: bottom center; }
         
-        /* 4. TEXT (BETWEEN SKY AND STATUE) */
+        /* 4. TEXT (MOVED UP) */
         .hero-text {
             position: relative;
             z-index: 4;
@@ -111,6 +111,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            margin-top: -15vh; /* This pushes the text up on mobile */
         }
 
         .hero-text h2 {
@@ -123,15 +124,40 @@
 
         .hero-text h1 {
             font-family: 'TBSGartek', Impact, sans-serif;
-            font-size: 32vw; /* Massive text */
+            font-size: 32vw; 
             line-height: 0.8;
             margin: 0;
             color: #e5e5e1;
             transform: scaleY(1.3); 
         }
 
-        /* 5. STATUE (TOP LAYER) */
-        .layer-statue { background-image: url('statue.png'); z-index: 5; background-position: bottom center; background-size: contain; }
+        /* 5. STATUE (FIXED MOBILE SIZE) */
+        .layer-statue { 
+            background-image: url('statue.png'); 
+            z-index: 5; 
+            background-position: bottom center; 
+            background-size: auto 65vh; /* Makes statue tall on mobile */
+        }
+
+        /* 6. SCROLL DOWN INDICATOR */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-family: 'NeueHaas', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: lowercase;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, 0); opacity: 0.4; }
+            50% { transform: translate(-50%, 8px); opacity: 1; }
+        }
 
         /* =========================================
            CONTENT & FORM SECTION
@@ -288,8 +314,14 @@
                 height: 100vh; 
                 transform: translate(-50%, -50%) rotate(0deg); 
             }
+            .hero-text { 
+                margin-top: -8vh; /* Less push up on desktop */
+            }
             .hero-text h1 { font-size: 20vw; }
             .hero-text h2 { font-size: 3vw; }
+            .layer-statue {
+                background-size: contain; /* Return to normal on PC */
+            }
             .content-section { padding: 80px 40px; }
         }
     </style>
@@ -311,6 +343,9 @@
         </div>
 
         <div class="layer layer-statue" id="l-statue"></div>
+        
+        <!-- SCROLL DOWN TEXT -->
+        <div class="scroll-indicator">scroll down</div>
     </div>
 
     <!-- CONTENT & FORM -->
@@ -382,7 +417,6 @@
         window.addEventListener('scroll', () => {
             let scrollY = window.scrollY;
             
-            // Speeds adjusted to match the new strict layer order (bottom is slowest, top is fastest/fixed)
             document.getElementById('l-bg').style.transform = `translateY(${scrollY * 0.5}px)`;
             document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
             document.getElementById('l-sky').style.transform = `translateY(${scrollY * 0.3}px)`;
