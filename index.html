@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ENCOUNTER | Youth Camp 2026</title>
+    
+    <!-- OPTIMIZATION: Preload fonts and critical images to prevent popping -->
+    <link rel="preload" href="tbsgartekcondensed.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="neuehaasgrotdispround-65medium-trial.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="red-rocks.png" as="image">
+    <link rel="preload" href="statue.png" as="image">
+
     <style>
         /* =========================================
            FONT SETUP
@@ -11,15 +18,13 @@
         @font-face {
             font-family: 'TBSGartek';
             src: url('tbsgartekcondensed.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
+            font-weight: normal; font-style: normal; font-display: swap;
         }
         
         @font-face {
             font-family: 'NeueHaas';
             src: url('neuehaasgrotdispround-65medium-trial.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
+            font-weight: normal; font-style: normal; font-display: swap;
         }
 
         :root {
@@ -40,314 +45,177 @@
         }
 
         /* =========================================
+           PRELOADER SCREEN
+           ========================================= */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #111;
+            z-index: 100000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader-text {
+            font-family: 'TBSGartek', sans-serif;
+            font-size: 3rem;
+            color: var(--accent-gold);
+            letter-spacing: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Hide preloader when body has .loaded class */
+        body.loaded #preloader {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* =========================================
            GLOBAL TEXTURE OVERLAY (GRAIN - 100%)
            ========================================= */
         .global-texture {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            overflow: hidden;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; overflow: hidden;
         }
 
         .global-texture::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vh; 
-            height: 100vw;
+            content: ""; position: absolute; top: 50%; left: 50%;
+            width: 100vh; height: 100vw;
             transform: translate(-50%, -50%) rotate(90deg);
             background-image: url('texture-grain.png');
-            background-size: cover;
-            background-position: center;
-            mix-blend-mode: overlay;
-            opacity: 1; /* Збільшено до 100% */
+            background-size: cover; background-position: center;
+            mix-blend-mode: overlay; opacity: 1;
         }
 
         /* =========================================
-           3D PARALLAX HERO SECTION
+           3D PARALLAX HERO SECTION & INTRO ANIMATIONS
            ========================================= */
         .hero-container {
-            position: relative;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background-color: #3b302c; 
+            position: relative; height: 100vh; display: flex;
+            align-items: center; justify-content: center;
+            overflow: hidden; background-color: #3b302c; 
         }
 
         .layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
+            position: absolute; width: 100%; height: 100%;
+            background-position: center; background-size: cover; background-repeat: no-repeat;
         }
 
-        /* 1. BOTTOM LAYER */
-        .layer-bg { background-image: url('red-rocks.png'); z-index: 1; }
+        /* Initial hidden states for animation */
+        .layer-bg { 
+            background-image: url('red-rocks.png'); z-index: 1; 
+            transform: scale(1.1); transition: transform 3s ease-out;
+        }
+        .layer-sun { 
+            background-image: url('gold-circle.png'); z-index: 2; background-size: contain; 
+            opacity: 0; transform: translateY(30px) scale(0.9); transition: all 2s ease-out;
+        }
+        .layer-sky { 
+            background-image: url('ripped-sky.png'); z-index: 3; background-position: bottom center; 
+            opacity: 0; transform: translateY(50px); transition: all 2s ease-out;
+        }
         
-        /* 2. GOLD CIRCLE */
-        .layer-sun { background-image: url('gold-circle.png'); z-index: 2; background-size: contain; }
-        
-        /* 3. RIPPED SKY */
-        .layer-sky { background-image: url('ripped-sky.png'); z-index: 3; background-position: bottom center; }
-        
-        /* 4. TEXT */
         .hero-text {
-            position: relative;
-            z-index: 4;
-            text-align: center;
-            text-transform: uppercase;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: -35vh; 
+            position: relative; z-index: 4; text-align: center; text-transform: uppercase;
+            width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: -35vh; 
         }
 
-        .hero-text h3 {
-            font-family: 'NeueHaas', sans-serif;
-            font-size: 3.5vw;
-            letter-spacing: 0.4em;
-            margin-bottom: 5px;
-            color: var(--accent-gold);
-        }
+        .hero-text > * { opacity: 0; transform: translateY(20px); transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
-        .hero-text h2 {
-            font-family: 'NeueHaas', sans-serif;
-            font-size: 5vw;
-            letter-spacing: 0.3em;
-            margin-bottom: 10px;
-            color: #e5e5e1;
-            /* Тіні прибрані */
-        }
+        .hero-text h3 { font-family: 'NeueHaas', sans-serif; font-size: 3.5vw; letter-spacing: 0.4em; margin-bottom: 5px; color: var(--accent-gold); }
+        .hero-text h2 { font-family: 'NeueHaas', sans-serif; font-size: 5vw; letter-spacing: 0.3em; margin-bottom: 10px; color: #e5e5e1; }
+        .hero-text h1 { font-family: 'TBSGartek', Impact, sans-serif; font-size: 32vw; line-height: 0.8; margin: 0; color: #e5e5e1; transform: scaleY(1.3) translateY(20px) !important; }
 
-        .hero-text h1 {
-            font-family: 'TBSGartek', Impact, sans-serif;
-            font-size: 32vw; 
-            line-height: 0.8;
-            margin: 0;
-            color: #e5e5e1;
-            transform: scaleY(1.3); 
-            /* Тіні прибрані */
-        }
-
-        /* 5. HERO TEXTURE (XEROX + IMAGE) OVER TEXT, UNDER STATUE */
         .layer-texture { 
             background-image: url('xerox-texture.png'), url('texture-image.png'); 
-            z-index: 5; 
-            mix-blend-mode: overlay;
-            opacity: 0.6;
-            pointer-events: none;
+            z-index: 5; mix-blend-mode: overlay; opacity: 0; transition: opacity 2s ease-in; pointer-events: none;
         }
 
-        /* 6. STATUE */
         .layer-statue { 
-            background-image: url('statue.png'); 
-            z-index: 6; 
-            background-position: bottom center; 
-            background-size: auto 65vh; 
+            background-image: url('statue.png'); z-index: 6; 
+            background-position: bottom center; background-size: auto 65vh; 
+            opacity: 0; transform: translateY(150px); transition: all 2s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* 7. SCROLL DOWN INDICATOR */
         .scroll-indicator {
-            position: absolute;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            font-family: 'NeueHaas', sans-serif;
-            font-size: 0.85rem;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: rgba(255, 255, 255, 0.9);
-            text-transform: lowercase;
-            animation: float 2s ease-in-out infinite;
-            pointer-events: none;
+            position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); z-index: 10;
+            font-family: 'NeueHaas', sans-serif; font-size: 0.85rem; font-weight: bold; letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.9); text-transform: lowercase; pointer-events: none;
+            opacity: 0; transition: opacity 1s ease-in;
         }
 
+        /* ANIMATION TRIGGERS (When body gets .loaded class) */
+        body.loaded .layer-bg { transform: scale(1); }
+        body.loaded .layer-sun { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.3s; }
+        body.loaded .layer-sky { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+        body.loaded .hero-text h3 { opacity: 1; transform: translateY(0); transition-delay: 0.8s; }
+        body.loaded .hero-text h2 { opacity: 1; transform: translateY(0); transition-delay: 1.0s; }
+        body.loaded .hero-text h1 { opacity: 1; transform: scaleY(1.3) translateY(0) !important; transition-delay: 1.2s; }
+        body.loaded .layer-texture { opacity: 0.6; transition-delay: 1.5s; }
+        body.loaded .layer-statue { opacity: 1; transform: translateY(0); transition-delay: 1.4s; }
+        
+        body.loaded .scroll-indicator {
+            animation: float 2s ease-in-out infinite, fadeIndicator 2s ease-in forwards;
+            animation-delay: 0s, 2.5s; /* Delay the appearance of scroll text */
+        }
+
+        @keyframes fadeIndicator { to { opacity: 1; } }
         @keyframes float {
-            0%, 100% { transform: translate(-50%, 0); opacity: 0.6; }
-            50% { transform: translate(-50%, 8px); opacity: 1; }
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 8px); }
         }
 
         /* =========================================
-           CONTENT & FORM SECTION
+           CONTENT & FORM SECTION (STYLES REMAIN THE SAME)
            ========================================= */
-        .content-section {
-            position: relative;
-            z-index: 10;
-            background-color: var(--bg-dark);
-            padding: 50px 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .content-section { position: relative; z-index: 10; background-color: var(--bg-dark); padding: 50px 20px; max-width: 600px; margin: 0 auto; }
+        .info-block { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 10px; margin-bottom: 40px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .info-block h3 { font-family: 'TBSGartek', sans-serif; color: var(--accent-gold); font-size: 2.5rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .info-block p { margin-bottom: 10px; font-size: 1.1rem; line-height: 1.5; }
+        .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        .price-item { background: rgba(0, 0, 0, 0.4); padding: 20px 15px; text-align: center; border-radius: 8px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .price-item span { font-family: 'TBSGartek', sans-serif; display: block; font-size: 3rem; color: var(--accent-gold); line-height: 1; margin-bottom: 5px; }
+        .notice { font-size: 0.95rem; color: #bbb; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
 
-        .info-block {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .info-block h3 {
-            font-family: 'TBSGartek', sans-serif;
-            color: var(--accent-gold);
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .info-block p {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        .price-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .price-item {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px 15px;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .price-item span {
-            font-family: 'TBSGartek', sans-serif;
-            display: block;
-            font-size: 3rem;
-            color: var(--accent-gold);
-            line-height: 1;
-            margin-bottom: 5px;
-        }
-
-        .notice {
-            font-size: 0.95rem;
-            color: #bbb;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* FORM STYLES */
         form { display: flex; flex-direction: column; gap: 20px; }
-        
         label { font-weight: bold; margin-bottom: 5px; display: block; letter-spacing: 0.5px; }
-        
-        input {
-            font-family: 'NeueHaas', sans-serif;
-            width: 100%;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .checkbox-wrapper {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: rgba(212, 175, 55, 0.08);
-            padding: 18px;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-gold);
-        }
-
-        .checkbox-wrapper input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            margin-top: 2px;
-            flex-shrink: 0;
-        }
-
+        input { font-family: 'NeueHaas', sans-serif; width: 100%; padding: 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease; }
+        input:focus { outline: none; border-color: var(--accent-gold); background: rgba(255, 255, 255, 0.12); }
+        .checkbox-wrapper { display: flex; align-items: flex-start; gap: 12px; background: rgba(212, 175, 55, 0.08); padding: 18px; border-radius: 8px; border-left: 4px solid var(--accent-gold); }
+        .checkbox-wrapper input[type="checkbox"] { width: 22px; height: 22px; margin-top: 2px; flex-shrink: 0; }
         .checkbox-wrapper label { margin-bottom: 0; font-size: 0.95rem; font-weight: normal; line-height: 1.4; }
-
         .hidden { display: none !important; }
-
-        .error-message {
-            color: var(--error-red);
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255, 76, 76, 0.1);
-            border-radius: 8px;
-        }
-
-        button {
-            font-family: 'TBSGartek', sans-serif;
-            background-color: var(--accent-gold);
-            color: #111;
-            padding: 18px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        button:hover:not(:disabled) {
-            background-color: #e6c555;
-            transform: translateY(-2px);
-        }
-
-        button:disabled {
-            background-color: #444;
-            color: #777;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .error-message { color: var(--error-red); font-weight: bold; text-align: center; margin-top: 10px; padding: 10px; background: rgba(255, 76, 76, 0.1); border-radius: 8px; }
+        button { font-family: 'TBSGartek', sans-serif; background-color: var(--accent-gold); color: #111; padding: 18px; border: none; border-radius: 8px; font-size: 1.8rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
+        button:hover:not(:disabled) { background-color: #e6c555; transform: translateY(-2px); }
+        button:disabled { background-color: #444; color: #777; cursor: not-allowed; transform: none; }
 
         /* Desktop Adjustments */
         @media (min-width: 768px) {
-            .global-texture::before {
-                width: 100vw; 
-                height: 100vh; 
-                transform: translate(-50%, -50%) rotate(0deg); 
-            }
-            .hero-text { 
-                margin-top: -25vh; 
-            }
+            .global-texture::before { width: 100vw; height: 100vh; transform: translate(-50%, -50%) rotate(0deg); }
+            .hero-text { margin-top: -25vh; }
             .hero-text h3 { font-size: 1.5vw; }
             .hero-text h1 { font-size: 20vw; }
             .hero-text h2 { font-size: 3vw; }
-            .layer-statue {
-                background-size: contain; 
-            }
+            .layer-statue { background-size: contain; }
             .content-section { padding: 80px 40px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- LOADING SCREEN -->
+    <div id="preloader">
+        <div class="loader-text">ENCOUNTER</div>
+    </div>
 
     <!-- TEXTURE OVERLAY -->
     <div class="global-texture"></div>
@@ -434,27 +302,33 @@
         </div>
     </div>
 
-    <!-- PARALLAX & FORM LOGIC SCRIPT -->
+    <!-- PARALLAX, ANIMATION & FORM LOGIC SCRIPT -->
     <script>
+        // INIT ANIMATION WHEN EVERYTHING IS LOADED
+        window.addEventListener('load', () => {
+            // Add 'loaded' class to trigger all CSS intro animations
+            document.body.classList.add('loaded');
+
+            // Auto-scroll nudge after intro animations complete (approx 3.5 seconds)
+            setTimeout(() => {
+                if (window.scrollY === 0) {
+                    window.scrollBy({ top: 90, behavior: 'smooth' });
+                }
+            }, 3500);
+        });
+
         // Parallax effect on scroll
         window.addEventListener('scroll', () => {
             let scrollY = window.scrollY;
-            
-            document.getElementById('l-bg').style.transform = `translateY(${scrollY * 0.5}px)`;
-            document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
-            document.getElementById('l-sky').style.transform = `translateY(${scrollY * 0.3}px)`;
-            document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.15}px)`;
-            document.getElementById('l-texture').style.transform = `translateY(${scrollY * 0.15}px)`; 
-            document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.02}px)`; 
-        });
-
-        // Auto-scroll nudge after 1.5 seconds
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                if (window.scrollY === 0) {
-                    window.scrollBy({ top: 80, behavior: 'smooth' });
-                }
-            }, 1500);
+            // Only apply parallax if screen is wider than 0 to prevent mobile glitches on initial load
+            if(scrollY >= 0) {
+                document.getElementById('l-bg').style.transform = `scale(1) translateY(${scrollY * 0.5}px)`;
+                document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
+                document.getElementById('l-sky').style.transform = `translateY(${scrollY * 0.3}px)`;
+                document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.15}px)`;
+                document.getElementById('l-texture').style.transform = `translateY(${scrollY * 0.15}px)`; 
+                document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.02}px)`; 
+            }
         });
 
         // Age Verification Logic
@@ -467,7 +341,6 @@
         function checkAge() {
             const age = parseInt(ageInput.value);
             
-            // Reset states
             age15Question.classList.add('hidden');
             errorMessage.classList.add('hidden');
             submitBtn.disabled = false;
@@ -475,12 +348,10 @@
             if (!ageInput.value) return;
 
             if (age <= 14) {
-                // Block 14 and under
                 submitBtn.disabled = true;
                 errorMessage.classList.remove('hidden');
                 errorMessage.innerText = "Sorry, you must be 16+ to register for this camp.";
             } else if (age === 15) {
-                // Show extra question for 15
                 age15Question.classList.remove('hidden');
                 if (!turning16Checkbox.checked) {
                     submitBtn.disabled = true;
