@@ -61,12 +61,11 @@
             width: 100vh; 
             height: 100vw;
             transform: translate(-50%, -50%) rotate(90deg);
-            /* New texture order */
             background-image: url('xerox-texture.png'), url('texture-image.png'), url('texture-grain.png');
             background-size: cover;
             background-position: center;
             mix-blend-mode: overlay;
-            opacity: 0.3; /* Lowered opacity */
+            opacity: 0.3;
         }
 
         /* =========================================
@@ -100,7 +99,7 @@
         /* 3. RIPPED SKY */
         .layer-sky { background-image: url('ripped-sky.png'); z-index: 3; background-position: bottom center; }
         
-        /* 4. TEXT (MOVED UP) */
+        /* 4. TEXT (MOVED SIGNIFICANTLY UP) */
         .hero-text {
             position: relative;
             z-index: 4;
@@ -111,7 +110,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: -15vh; /* This pushes the text up on mobile */
+            margin-top: -35vh; /* ЗНАЧНО ПІДНЯТО ВГОРУ ДЛЯ МОБІЛЬНИХ */
         }
 
         .hero-text h2 {
@@ -131,12 +130,12 @@
             transform: scaleY(1.3); 
         }
 
-        /* 5. STATUE (FIXED MOBILE SIZE) */
+        /* 5. STATUE */
         .layer-statue { 
             background-image: url('statue.png'); 
             z-index: 5; 
             background-position: bottom center; 
-            background-size: auto 65vh; /* Makes statue tall on mobile */
+            background-size: auto 65vh; 
         }
 
         /* 6. SCROLL DOWN INDICATOR */
@@ -315,12 +314,12 @@
                 transform: translate(-50%, -50%) rotate(0deg); 
             }
             .hero-text { 
-                margin-top: -8vh; /* Less push up on desktop */
+                margin-top: -25vh; /* ПІДНЯТО ВГОРУ ДЛЯ ПК */
             }
             .hero-text h1 { font-size: 20vw; }
             .hero-text h2 { font-size: 3vw; }
             .layer-statue {
-                background-size: contain; /* Return to normal on PC */
+                background-size: contain; 
             }
             .content-section { padding: 80px 40px; }
         }
