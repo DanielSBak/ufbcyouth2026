@@ -6,18 +6,20 @@
     <title>ENCOUNTER | Youth Camp 2026</title>
     <style>
         /* =========================================
-           FONT SETUP (UPLOAD YOUR FONTS HERE)
+           FONT SETUP (LOADED FROM GITHUB)
            ========================================= */
         @font-face {
-            font-family: 'PosterFontMain';
-            src: url('YOUR_MAIN_FONT.woff2') format('woff2'),
-                 url('YOUR_MAIN_FONT.ttf') format('truetype');
-            font-weight: bold;
+            font-family: 'TBSGartek';
+            src: url('tbsgartekcondensed.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
         }
+        
         @font-face {
-            font-family: 'PosterFontSecondary';
-            src: url('YOUR_SECONDARY_FONT.woff2') format('woff2'),
-                 url('YOUR_SECONDARY_FONT.ttf') format('truetype');
+            font-family: 'NeueHaas';
+            src: url('neuehaasgrotdispround-65medium-trial.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
         }
 
         :root {
@@ -32,9 +34,24 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
-            /* Fallback fonts until you upload yours */
-            font-family: 'PosterFontSecondary', 'Helvetica Neue', Arial, sans-serif; 
+            font-family: 'NeueHaas', Helvetica, Arial, sans-serif; 
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* GLOBAL TEXTURE OVERLAY */
+        .global-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('Xerox Texture Image.png'), url('Texture Grain Image.png');
+            background-size: cover;
+            mix-blend-mode: overlay;
+            opacity: 0.6;
+            pointer-events: none; /* Let clicks pass through to buttons/forms */
+            z-index: 9999;
         }
 
         /* =========================================
@@ -47,11 +64,9 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            /* Placeholder background color */
-            background: #4a4a4a; 
+            background-color: #3b302c; /* Fallback matching the red rocks vibe */
         }
 
-        /* Replace 'url(...)' with your actual rendered PNG layer files */
         .layer {
             position: absolute;
             width: 100%;
@@ -61,32 +76,37 @@
             background-repeat: no-repeat;
         }
 
-        .layer-bg { background-image: url('layer1-mountains.png'); z-index: 1; }
-        .layer-sun { background-image: url('layer2-sun.png'); z-index: 2; }
+        /* Layer mapping based on your GitHub files */
+        .layer-bg { background-image: url('Red Rocks Image.png'); z-index: 1; }
+        .layer-sun { background-image: url('Gold Circle Image.png'); z-index: 2; background-size: contain; }
         
         .hero-text {
             position: relative;
             z-index: 3;
             text-align: center;
-            font-family: 'PosterFontMain', Impact, sans-serif;
             text-transform: uppercase;
+            width: 100%;
         }
 
         .hero-text h1 {
-            font-size: 22vw;
+            font-family: 'TBSGartek', Impact, sans-serif;
+            font-size: 28vw;
             line-height: 0.8;
             margin: 0;
             color: #e5e5e1;
+            transform: scaleY(1.2); /* Slight stretch to match the poster aesthetic */
         }
 
         .hero-text h2 {
+            font-family: 'NeueHaas', sans-serif;
             font-size: 6vw;
             letter-spacing: 0.2em;
-            margin-top: 10px;
+            margin-top: 15px;
+            color: #e5e5e1;
         }
 
-        .layer-statue { background-image: url('layer3-statue.png'); z-index: 4; }
-        .layer-foreground { background-image: url('layer4-blue-texture.png'); z-index: 5; }
+        .layer-statue { background-image: url('Statue Image.png'); z-index: 4; background-position: bottom center; background-size: contain; }
+        .layer-foreground { background-image: url('Ripped Sky Image.png'); z-index: 5; background-position: bottom center; }
 
         /* =========================================
            CONTENT & FORM SECTION
@@ -105,13 +125,16 @@
             padding: 25px;
             border-radius: 10px;
             margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .info-block h3 {
+            font-family: 'TBSGartek', sans-serif;
             color: var(--accent-gold);
-            font-size: 1.5rem;
+            font-size: 2.5rem;
             margin-bottom: 15px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .info-block p {
@@ -124,62 +147,75 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .price-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px 15px;
             text-align: center;
             border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
         .price-item span {
+            font-family: 'TBSGartek', sans-serif;
             display: block;
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 3rem;
             color: var(--accent-gold);
+            line-height: 1;
+            margin-bottom: 5px;
         }
 
         .notice {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-top: 15px;
-            font-style: italic;
+            font-size: 0.95rem;
+            color: #bbb;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         /* FORM STYLES */
         form { display: flex; flex-direction: column; gap: 20px; }
         
-        label { font-weight: bold; margin-bottom: 5px; display: block; }
+        label { font-weight: bold; margin-bottom: 5px; display: block; letter-spacing: 0.5px; }
         
         input {
+            font-family: 'NeueHaas', sans-serif;
             width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             border-radius: 8px;
             font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .checkbox-wrapper {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            background: rgba(212, 175, 55, 0.1);
-            padding: 15px;
+            gap: 12px;
+            background: rgba(212, 175, 55, 0.08);
+            padding: 18px;
             border-radius: 8px;
-            border-left: 3px solid var(--accent-gold);
+            border-left: 4px solid var(--accent-gold);
         }
 
         .checkbox-wrapper input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             margin-top: 2px;
+            flex-shrink: 0;
         }
 
-        .checkbox-wrapper label { margin-bottom: 0; font-size: 0.95rem; font-weight: normal; }
+        .checkbox-wrapper label { margin-bottom: 0; font-size: 0.95rem; font-weight: normal; line-height: 1.4; }
 
         .hidden { display: none !important; }
 
@@ -188,36 +224,50 @@
             font-weight: bold;
             text-align: center;
             margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 76, 76, 0.1);
+            border-radius: 8px;
         }
 
         button {
+            font-family: 'TBSGartek', sans-serif;
             background-color: var(--accent-gold);
-            color: #000;
+            color: #111;
             padding: 18px;
             border: none;
             border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #e6c555;
+            transform: translateY(-2px);
         }
 
         button:disabled {
-            background-color: #555;
-            color: #888;
+            background-color: #444;
+            color: #777;
             cursor: not-allowed;
+            transform: none;
         }
 
         /* Desktop Adjustments */
         @media (min-width: 768px) {
-            .hero-text h1 { font-size: 15vw; }
-            .hero-text h2 { font-size: 4vw; }
+            .hero-text h1 { font-size: 18vw; }
+            .hero-text h2 { font-size: 3vw; }
             .content-section { padding: 80px 40px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- TEXTURE OVERLAY -->
+    <div class="global-texture"></div>
 
     <!-- 3D HERO SECTION -->
     <div class="hero-container" id="hero">
@@ -225,7 +275,6 @@
         <div class="layer layer-sun" id="l-sun"></div>
         
         <div class="hero-text" id="l-text">
-            <h2>YOUTH CAMP 2026</h2>
             <h1>ENCOUNTER</h1>
             <h2>JULY 1-5</h2>
         </div>
@@ -253,13 +302,12 @@
                 </div>
             </div>
             
-            <p class="notice">Registration closes June 21 (Sunday).<br>If registration is closed and you still want to register, please talk to your youth leader with any questions.</p>
+            <p class="notice">Registration closes June 21 (Sunday).<br><br>If registration is closed and you still want to register, please talk to your youth leader with any questions.</p>
         </div>
 
         <div class="info-block" id="form-container">
             <h3>Registration Form</h3>
             
-            <!-- Replace YOUR_FORMSPREE_ID with your actual ID -->
             <form id="registrationForm" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
                 
                 <div>
@@ -291,23 +339,23 @@
                     </label>
                 </div>
 
-                <button type="submit" id="submitBtn">Register Now</button>
+                <button type="submit" id="submitBtn">Register</button>
                 <div id="errorMessage" class="error-message hidden">Sorry, you must be 16+ to register for this camp.</div>
             </form>
         </div>
     </div>
 
-    <!-- SIMPLE PARALLAX SCRIPT -->
+    <!-- PARALLAX & FORM LOGIC SCRIPT -->
     <script>
         // Parallax effect on scroll
         window.addEventListener('scroll', () => {
             let scrollY = window.scrollY;
             
-            document.getElementById('l-bg').style.transform = `translateY(${scrollY * 0.5}px)`;
-            document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
-            document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.3}px)`;
-            document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.15}px)`;
-            // Foreground stays fixed for depth effect
+            document.getElementById('l-bg').style.transform = `translateY(${scrollY * 0.4}px)`;
+            document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.3}px)`;
+            document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.2}px)`;
+            document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.08}px)`;
+            // Foreground stays fixed to create a mask effect at the bottom
         });
 
         // Age Verification Logic
