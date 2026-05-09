@@ -40,7 +40,7 @@
         }
 
         /* =========================================
-           GLOBAL TEXTURE OVERLAY (30% Opacity + New Order)
+           GLOBAL TEXTURE OVERLAY (Only Grain & Xerox)
            ========================================= */
         .global-texture {
             position: fixed;
@@ -61,7 +61,8 @@
             width: 100vh; 
             height: 100vw;
             transform: translate(-50%, -50%) rotate(90deg);
-            background-image: url('xerox-texture.png'), url('texture-image.png'), url('texture-grain.png');
+            /* Removed texture-image.png from here */
+            background-image: url('xerox-texture.png'), url('texture-grain.png');
             background-size: cover;
             background-position: center;
             mix-blend-mode: overlay;
@@ -99,7 +100,7 @@
         /* 3. RIPPED SKY */
         .layer-sky { background-image: url('ripped-sky.png'); z-index: 3; background-position: bottom center; }
         
-        /* 4. TEXT (MOVED SIGNIFICANTLY UP) */
+        /* 4. TEXT */
         .hero-text {
             position: relative;
             z-index: 4;
@@ -110,7 +111,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: -35vh; /* ЗНАЧНО ПІДНЯТО ВГОРУ ДЛЯ МОБІЛЬНИХ */
+            margin-top: -35vh; 
         }
 
         .hero-text h2 {
@@ -119,6 +120,7 @@
             letter-spacing: 0.3em;
             margin-bottom: 10px;
             color: #e5e5e1;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Light drop shadow */
         }
 
         .hero-text h1 {
@@ -128,17 +130,27 @@
             margin: 0;
             color: #e5e5e1;
             transform: scaleY(1.3); 
+            text-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Light drop shadow */
         }
 
-        /* 5. STATUE */
+        /* 5. HERO TEXTURE (OVER TEXT, UNDER STATUE) */
+        .layer-texture { 
+            background-image: url('texture-image.png'); 
+            z-index: 5; 
+            mix-blend-mode: overlay;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* 6. STATUE */
         .layer-statue { 
             background-image: url('statue.png'); 
-            z-index: 5; 
+            z-index: 6; 
             background-position: bottom center; 
             background-size: auto 65vh; 
         }
 
-        /* 6. SCROLL DOWN INDICATOR */
+        /* 7. SCROLL DOWN INDICATOR */
         .scroll-indicator {
             position: absolute;
             bottom: 30px;
@@ -314,7 +326,7 @@
                 transform: translate(-50%, -50%) rotate(0deg); 
             }
             .hero-text { 
-                margin-top: -25vh; /* ПІДНЯТО ВГОРУ ДЛЯ ПК */
+                margin-top: -25vh; 
             }
             .hero-text h1 { font-size: 20vw; }
             .hero-text h2 { font-size: 3vw; }
@@ -341,6 +353,7 @@
             <h1>ENCOUNTER</h1>
         </div>
 
+        <div class="layer layer-texture" id="l-texture"></div>
         <div class="layer layer-statue" id="l-statue"></div>
         
         <!-- SCROLL DOWN TEXT -->
@@ -420,6 +433,7 @@
             document.getElementById('l-sun').style.transform = `translateY(${scrollY * 0.4}px)`;
             document.getElementById('l-sky').style.transform = `translateY(${scrollY * 0.3}px)`;
             document.getElementById('l-text').style.transform = `translateY(${scrollY * 0.15}px)`;
+            document.getElementById('l-texture').style.transform = `translateY(${scrollY * 0.12}px)`; // Texture layer over text
             document.getElementById('l-statue').style.transform = `translateY(${scrollY * 0.02}px)`; 
         });
 
