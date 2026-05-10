@@ -236,15 +236,12 @@
 </head>
 <body>
 
-    <!-- LOADING SCREEN -->
     <div id="preloader">
         <div class="loader-text">ENCOUNTER</div>
     </div>
 
-    <!-- TEXTURE OVERLAY -->
     <div class="global-texture"></div>
 
-    <!-- 3D HERO SECTION -->
     <div class="hero-container" id="hero">
         <div class="layer layer-bg" id="l-bg"></div>
         <div class="layer layer-sun" id="l-sun"></div>
@@ -259,11 +256,9 @@
         <div class="layer layer-texture" id="l-texture"></div>
         <div class="layer layer-statue" id="l-statue"></div>
         
-        <!-- SCROLL DOWN TEXT -->
         <div class="scroll-indicator">scroll down &darr;</div>
     </div>
 
-    <!-- CONTENT & FORM -->
     <div class="content-section">
         
         <div class="info-block">
@@ -288,7 +283,6 @@
         <div class="info-block" id="form-container">
             <h3>Registration Form</h3>
             
-            <!-- ОНОВЛЕНИЙ ЛІНК FORMSPREE -->
             <form id="registrationForm" action="https://formspree.io/f/mkoypowe" method="POST">
                 
                 <div>
@@ -308,7 +302,6 @@
 
                 <div>
                     <label for="gender">Gender</label>
-                    <div class="input-note note-red">ONLY TWO GENDERS!!!</div>
                     <select id="gender" name="gender" required>
                         <option value="" disabled selected>Select...</option>
                         <option value="Male">Male</option>
@@ -318,10 +311,9 @@
 
                 <div>
                     <label for="age">Age</label>
-                    <input type="number" id="age" name="age" required placeholder="e.g. 16">
+                    <input type="number" id="age" name="age" required min="10" max="50" placeholder="e.g. 16">
                 </div>
 
-                <!-- 15 Year Old Extra Question -->
                 <div id="age15Question" class="checkbox-wrapper hidden">
                     <input type="checkbox" id="turning16" name="turning_16_this_year">
                     <label for="turning16"><strong>Wait!</strong> Are you turning 16 later this year? Check this box to continue.</label>
@@ -350,7 +342,6 @@
                     <textarea id="allergies" name="allergies" rows="3" placeholder="Leave blank if none..."></textarea>
                 </div>
 
-                <!-- Liability Waiver Agreement -->
                 <div class="checkbox-wrapper important-warning">
                     <input type="checkbox" id="liabilityAgreement" name="liability_agreement" required>
                     <label for="liabilityAgreement">
@@ -358,7 +349,6 @@
                     </label>
                 </div>
 
-                <!-- Payment Agreement -->
                 <div class="checkbox-wrapper">
                     <input type="checkbox" id="zelleAgreement" name="zelle_agreement" required>
                     <label for="zelleAgreement">
@@ -372,7 +362,6 @@
         </div>
     </div>
 
-    <!-- PARALLAX, ANIMATION & FORM LOGIC SCRIPT -->
     <script>
         window.addEventListener('load', () => {
             document.body.classList.add('loaded');
@@ -424,6 +413,10 @@
                 submitBtn.disabled = true;
                 errorMessage.classList.remove('hidden');
                 errorMessage.innerText = "Sorry, you must be 16+ to register for this camp.";
+            } else if (age > 50) {
+                submitBtn.disabled = true;
+                errorMessage.classList.remove('hidden');
+                errorMessage.innerText = "Please enter a valid age (max 50).";
             } else if (age === 15) {
                 age15Question.classList.remove('hidden');
                 if (!turning16Checkbox.checked) {
